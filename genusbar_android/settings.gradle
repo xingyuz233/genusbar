@@ -1,0 +1,1 @@
+include ':genusbar_app', ':genusbar_sdk'

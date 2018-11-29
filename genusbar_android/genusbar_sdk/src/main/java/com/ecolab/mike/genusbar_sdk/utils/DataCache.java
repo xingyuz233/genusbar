@@ -17,9 +17,20 @@ public class DataCache {
     private ACache diskCache;
     private LruCache<String, Object> lruCache;
 
-    public DataCache(Context context) {
-        diskCache = ACache.get(context);
-        lruCache = new LruCache<>(5 * M);
+    private volatile static DataCache mDataCache;
+
+
+    public static DataCache getSingleInstance() {
+        return mDataCache;
+    }
+
+    private DataCache() {
+    }
+
+    public static void init(Context context) {
+        mDataCache = new DataCache();
+        mDataCache.diskCache = ACache.get(context);
+        mDataCache.lruCache = new LruCache<>(5 * M);
     }
 
     public <T extends Serializable> void saveListData(String key, List<T> data) {
@@ -44,7 +55,7 @@ public class DataCache {
         return result;
     }
 
-    public void removeDate(String key) {
+    public void removeData(String key) {
         diskCache.remove(key);
     }
 
@@ -52,53 +63,126 @@ public class DataCache {
 
     // --token
 
-    public void saveToken(@NonNull Token token) {
-        saveData("token", token);
+    public void saveAcessToken(@NonNull Token token) {
+        saveData("access_token", token);
     }
 
-    public Token getToken() {
-        return getData("token");
+    public Token getAccessToken() {
+        return getData("access_token");
     }
 
-    public void clearToken() {
-        removeDate("token");
+    public void clearAccessToken() {
+        removeData("access_token");
+    }
+
+    public void saveAuthCenterAPIToken(@NonNull Token token) {
+        saveData("auth_center_api_token", token);
+    }
+
+    public Token getAuthCenterAPIToken() {
+        return getData("auth_center_api_token");
+    }
+
+    public void clearAuthCenterAPIToken() {
+        removeData("auth_center_api_token");
+    }
+
+    public void saveITAppToken(@NonNull Token token) {
+        saveData("it_app_token", token);
+    }
+
+    public Token getITAppToken() {
+        return getData("it_app_token");
+    }
+
+    public void clearITAPPToken() {
+        removeData("it_app_token");
     }
 
 
     // --order
-
-    public List<Object> getNotStartedOrderListObj() {
-        return getData("not_started_order_list");
+    public List<Object> getOrderListObj() {
+        return getData("order_list");
     }
 
-    public List<Object> getInProgressOrderListObj() {
-        return getData("in_progress_order_list");
+    public void saveOrderListObj(List<Object> list) {
+        saveData("order_list", new ArrayList<>(list));
     }
 
-    public List<Object> getCompletedOrderListObj() {
-        return getData("completed_order_list");
+    // --order list pageIndex
+    public Integer getOrderListPageIndex() {
+        return getData("order_list_page_index");
+    }
+    public void saveOrderListPageIndex(int pageIndex) {
+        saveData("order_list_page_index", pageIndex);
     }
 
-    public List<Object> getDeferredOrderListObj() {
-        return getData("deferred_order_list");
+    // --order recycler view position
+    public Integer getOrderListLastPosition() {
+        return getData("order_list_last_position");
+    }
+    public void saveOrderListLastPosition(int lastPosition) {
+        saveData("order_list_page_index", lastPosition);
     }
 
-
-    public void saveNotStartedOrderListObj(List<Object> list) {
-        saveListData("not_started_order_list", (ArrayList)list);
+    // --email
+    public String getEmail() {
+        return getData("email");
     }
 
-    public void saveInProgressOrderListObj(List<Object> list) {
-        saveListData("not_started_order_list", (ArrayList)list);
+    public void saveEmail(String email) {
+        saveData("email", email);
     }
 
-    public void saveCompletedOrderListObj(List<Object> list) {
-        saveListData("not_started_order_list", (ArrayList)list);
+    public void removeEmail() {
+        removeData("email");
     }
 
-    public void saveDeferredOrderListObj(List<Object> list) {
-        saveListData("not_started_order_list", (ArrayList)list);
+    // --name
+    public String getName() {
+        return getData("name");
     }
+
+    public void saveName(String name) {
+        saveData("name", name);
+    }
+
+    public void removeName() {
+        removeData("name");
+    }
+
+//    public List<Object> getNotStartedOrderListObj() {
+//        return getData("not_started_order_list");
+//    }
+//
+//    public List<Object> getInProgressOrderListObj() {
+//        return getData("in_progress_order_list");
+//    }
+//
+//    public List<Object> getCompletedOrderListObj() {
+//        return getData("completed_order_list");
+//    }
+//
+//    public List<Object> getDeferredOrderListObj() {
+//        return getData("deferred_order_list");
+//    }
+//
+//
+//    public void saveNotStartedOrderListObj(List<Object> list) {
+//        saveListData("not_started_order_list", (ArrayList)list);
+//    }
+//
+//    public void saveInProgressOrderListObj(List<Object> list) {
+//        saveListData("not_started_order_list", (ArrayList)list);
+//    }
+//
+//    public void saveCompletedOrderListObj(List<Object> list) {
+//        saveListData("not_started_order_list", (ArrayList)list);
+//    }
+//
+//    public void saveDeferredOrderListObj(List<Object> list) {
+//        saveListData("not_started_order_list", (ArrayList)list);
+//    }
 
 
 }

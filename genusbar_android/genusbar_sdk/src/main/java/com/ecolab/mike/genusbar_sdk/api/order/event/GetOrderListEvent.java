@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.ecolab.mike.genusbar_sdk.api.base.BaseEvent;
 import com.ecolab.mike.genusbar_sdk.api.order.bean.Order;
+import com.ecolab.mike.genusbar_sdk.api.order.bean.OrderListResponse;
 
 import java.util.List;
 

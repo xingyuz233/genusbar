@@ -1,95 +1,119 @@
 package com.ecolab.mike.genusbar_app.fragment;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.ecolab.mike.genusbar_app.R;
-import com.ecolab.mike.genusbar_app.base.BaseFragment;
-import com.ecolab.mike.genusbar_app.entity.TabEntity;
-import com.flyco.tablayout.CommonTabLayout;
-import com.flyco.tablayout.listener.CustomTabEntity;
-import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.ecolab.mike.genusbar_app.activity.CreateOrderActivity;
+import com.ecolab.mike.genusbar_app.provider.OrderProvider;
+import com.ecolab.mike.genusbar_app.recycler_view.HeaderFooterAdapter;
+import com.ecolab.mike.genusbar_app.recycler_view.SimpleRefreshRecyclerFragment;
+import com.ecolab.mike.genusbar_sdk.api.order.bean.Order;
+import com.ecolab.mike.genusbar_sdk.api.order.event.GetOrderListEvent;
 
-import java.util.ArrayList;
+import java.util.List;
 
+public class OrderFragment extends SimpleRefreshRecyclerFragment<Order, GetOrderListEvent> implements View.OnClickListener {
 
-@SuppressLint("ValidFragment")
-public class OrderFragment extends BaseFragment {
-    private String mTitle;
+    private boolean isFirstLaunch = true;
+    private String email;
 
     public static OrderFragment getInstance() {
-        OrderFragment sf = new OrderFragment();
-        sf.mTitle = "我的预约";
-        return sf;
+        Bundle args = new Bundle();
+        OrderFragment fragment = new OrderFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
+    @Override
+    public void initViews() {
+        super.initViews();
+        mViewHolder.setOnClickListener(this, R.id.add_order_button);
+    }
 
     @Override
-    protected int getLayoutId() {
+    public void initData(HeaderFooterAdapter adapter) {
+        // 优先从缓存中获取数据，如果是第一次加载则恢复滚动位置，如果没有缓存则从网络加载
+        List<Object> orders = mDataCache.getOrderListObj();
+        email = mDataCache.getEmail();
+        if (null != orders && orders.size() > 0) {
+
+            pageIndex = mDataCache.getOrderListPageIndex();
+            adapter.addDatas(orders);
+            if (isFirstLaunch) {
+
+                Integer lastPosition = mDataCache.getOrderListLastPosition();
+                if (lastPosition == null) {
+                    lastPosition = 0;
+                }
+                mRecyclerView.getLayoutManager().scrollToPosition(lastPosition);
+                isFirstAddFooter = false;
+                isFirstLaunch = false;
+            }
+        } else {
+            loadMore();
+        }
+    }
+
+    @Override
+    protected void setAdapterRegister(Context context, RecyclerView recyclerView,
+                                      HeaderFooterAdapter adapter) {
+        adapter.register(Order.class, new OrderProvider(getContext()));
+    }
+
+    @NonNull
+    @Override
+    protected String request(int pageIndex, int pageCount) {
+        return mGenusbarAPI.getOrderList(email, pageIndex, pageCount);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onRefresh(GetOrderListEvent event, HeaderFooterAdapter adapter) {
+        super.onRefresh(event, adapter);
+        mDataCache.saveOrderListObj(adapter.getDatas());
+    }
+
+    @Override
+    protected void onLoadMore(GetOrderListEvent event, HeaderFooterAdapter adapter) {
+        // TODO 排除重复数据
+        super.onLoadMore(event, adapter);
+        mDataCache.saveOrderListObj(adapter.getDatas());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        refresh();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 存储 PageIndex
+        mDataCache.saveOrderListPageIndex(pageIndex);
+        // 存储 RecyclerView 滚动位置
+        View view = mRecyclerView.getLayoutManager().getChildAt(0);
+        int lastPosition = mRecyclerView.getLayoutManager().getPosition(view);
+        mDataCache.saveOrderListLastPosition(lastPosition);
+    }
+
+    @Override
+    public int getLayoutId() {
         return R.layout.fragment_order;
     }
 
     @Override
-    protected void initViews() {
-        final ViewPager mViewPager = mViewHolder.get(R.id.view_pager);
-        final CommonTabLayout mTableLayout = mViewHolder.get(R.id.tab_layout);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.add_order_button:
+                openActivity(CreateOrderActivity.class);
 
-        String[] mTitles = {"未开始", "进行中", "已完成", "已逾期"};
-        ArrayList<CustomTabEntity> mTabEntityList = new ArrayList<>();
-        final ArrayList<Fragment> mFragmentList = new ArrayList<>();
-
-        for (int i = 0; i < mTitles.length; i++) {
-            mTabEntityList.add(new TabEntity(mTitles[i], R.mipmap.tab_speech_select, R.mipmap.tab_speech_unselect));
-            mFragmentList.add(SimpleCardFragment.getInstance(mTitles[i]));
         }
-
-        mTableLayout.setTabData(mTabEntityList);
-        mTableLayout.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelect(int position) {
-                mViewPager.setCurrentItem(position);
-            }
-
-            @Override
-            public void onTabReselect(int position) {
-
-            }
-        });
-
-        mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return mFragmentList.get(position);
-            }
-
-            @Override
-            public int getCount() {
-                return mFragmentList.size();
-            }
-        });
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mTableLayout.setCurrentTab(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
     }
 }

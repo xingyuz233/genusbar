@@ -8,16 +8,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.ecolab.mike.genusbar_sdk.api.GenusbarAPI;
+import com.ecolab.mike.genusbar_sdk.utils.DataCache;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected Toast mToast;
     protected ViewHolder mViewHolder;
+    protected DataCache mDataCache;
+    protected GenusbarAPI mGenusbarAPI;
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mViewHolder = new ViewHolder(getLayoutInflater(), null, getLayoutId());
+        mGenusbarAPI = GenusbarAPI.getSingleInstance();
+        mDataCache = DataCache.getSingleInstance();
         setContentView(mViewHolder.getRootView());
         initDatas();
         initViews();

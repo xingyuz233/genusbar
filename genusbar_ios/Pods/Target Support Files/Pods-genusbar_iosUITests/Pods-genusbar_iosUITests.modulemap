@@ -1,0 +1,6 @@
+framework module Pods_genusbar_iosUITests {
+  umbrella header "Pods-genusbar_iosUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -43,8 +43,6 @@ public class HomeActivity extends BaseActivity {
     private CommonTabLayout mTabLayout;
 
 
-    private DataCache mCache;
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_home;
@@ -52,7 +50,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void initDatas() {
-        mCache = new DataCache(this);
+//        mCache = new DataCache(this);
 //        EventBus.getDefault().register(this);
     }
 

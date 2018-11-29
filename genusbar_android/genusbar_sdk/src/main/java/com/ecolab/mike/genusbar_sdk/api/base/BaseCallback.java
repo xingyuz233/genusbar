@@ -31,9 +31,11 @@ public class BaseCallback<T> implements Callback<T> {
         if (response.isSuccessful()) {
             event.setCode(response.code());
             event.setBean(response.body());
+            event.setOk(true);
         } else {
             event.setCode(response.code());
             event.setBean(null);
+            event.setOk(false);
         }
         EventBus.getDefault().post(event);
     }
@@ -49,6 +51,7 @@ public class BaseCallback<T> implements Callback<T> {
     public void onFailure(@NonNull Call<T> call, @NonNull Throwable t) {
         event.setCode(-1);
         event.setBean(null);
+        event.setOk(false);
         EventBus.getDefault().post(event);
     }
 }

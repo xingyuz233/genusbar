@@ -20,7 +20,7 @@ public abstract class SimpleRefreshRecyclerFragment<T, Event extends BaseEvent<L
     @Override protected void onRefresh(Event event, HeaderFooterAdapter adapter) {
         adapter.clearDatas();
         adapter.addDatas(event.getBean());
-        toast("刷新成功");
+//        toast("刷新成功");
     }
 
     @Override protected void onLoadMore(Event event, HeaderFooterAdapter adapter) {
@@ -30,9 +30,9 @@ public abstract class SimpleRefreshRecyclerFragment<T, Event extends BaseEvent<L
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override protected void onError(Event event, String postType) {
         if (postType.equals(POST_LOAD_MORE)) {
-            toast("加载更多失败");
+            toast("加载更多失败, "+event.getCodeDescription());
         } else if (postType.equals(POST_REFRESH)) {
-            toast("刷新数据失败");
+            toast("刷新数据失败, "+event.getCodeDescription());
         }
     }
 }

@@ -1,6 +1,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tl="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eeeeee" >
@@ -8,31 +9,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <com.flyco.tablayout.CommonTabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            tl:tl_iconVisible="false"
-            tl:tl_indicator_color="#2C97DE"
-            tl:tl_textSelectColor="#2C97DE"
-            tl:tl_textUnselectColor="#66000000"
-            tl:tl_underline_color="#DDDDDD"
-            tl:tl_underline_height="1dp"/>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/view_pager"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:visibility="visible"
-        android:id="@+id/float_button"
+        android:id="@+id/add_order_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

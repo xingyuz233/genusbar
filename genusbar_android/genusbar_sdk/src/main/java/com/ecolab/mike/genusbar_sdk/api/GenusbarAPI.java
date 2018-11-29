@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.ecolab.mike.genusbar_sdk.api.order.api.OrderAPI;
 import com.ecolab.mike.genusbar_sdk.api.order.api.OrderImpl;
+import com.ecolab.mike.genusbar_sdk.api.order.bean.Order;
+import com.ecolab.mike.genusbar_sdk.api.order.bean.OrderRequest;
 
 public class GenusbarAPI implements OrderAPI {
 
@@ -38,8 +40,18 @@ public class GenusbarAPI implements OrderAPI {
 
     //--- order ---------------------------
     @Override
-    public String getOrderList(@NonNull String state, Integer offset, Integer limit) {
-        return sOrderImpl.getOrderList(state, offset, limit);
+    public String getOrderList(@NonNull String email, Integer pageIndex, Integer pageSize) {
+        return sOrderImpl.getOrderList(email, pageIndex, pageSize);
+    }
+
+    @Override
+    public String getOrderPeriod(@NonNull String dateString) {
+        return sOrderImpl.getOrderPeriod(dateString);
+    }
+
+    @Override
+    public String createOrder(@NonNull OrderRequest order) {
+        return sOrderImpl.createOrder(order);
     }
 
 }

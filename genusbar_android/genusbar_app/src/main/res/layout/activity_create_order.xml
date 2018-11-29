@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.CreateOrderActivity"
+    android:orientation="vertical">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.Toolbar>
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/date_spinner"
+        android:hint="未来10天内没有可以预约的日期"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/time_spinner"
+        android:hint="该天的预约场次已满，请更换日期"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/order_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:minHeight="100dp"
+        android:padding="6dp"
+        android:hint="简单描述下你的问题" />
+
+    <Button
+        android:id="@+id/create_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="预约"/>
+
+
+</LinearLayout>

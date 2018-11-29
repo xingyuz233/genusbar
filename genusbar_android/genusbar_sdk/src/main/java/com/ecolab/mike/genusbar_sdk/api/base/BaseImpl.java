@@ -29,7 +29,7 @@ public class BaseImpl<Service>{
     protected Service mService;
 
     public BaseImpl(@NonNull Context context) {
-        mDataCache = new DataCache(context.getApplicationContext());
+        mDataCache = DataCache.getSingleInstance();
         initRetrofit();
         this.mService = mRetrofit.create(getServiceClass());
     }
@@ -54,10 +54,10 @@ public class BaseImpl<Service>{
                 Request originalRequest = chain.request();
 
                 // 如果当前没有缓存token或者请求已经附带了token,就不再添加
-                if (mDataCache.getToken() == null || alreadyHasAuthorizationHeader(originalRequest)) {
+                if (mDataCache.getITAppToken() == null || alreadyHasAuthorizationHeader(originalRequest)) {
                     return chain.proceed(originalRequest);
                 }
-                String token = OAuth.TOKEN_PREFIX + mDataCache.getToken().getTokenString();
+                String token = OAuth.TOKEN_PREFIX + mDataCache.getITAppToken().getTokenString();
 
                 // 为请求添加token
                 Request authorised = originalRequest.newBuilder()

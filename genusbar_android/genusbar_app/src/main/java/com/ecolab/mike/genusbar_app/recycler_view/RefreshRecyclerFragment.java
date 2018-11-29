@@ -101,12 +101,12 @@ public abstract class RefreshRecyclerFragment<T, Event extends BaseEvent<List<T>
             return;
         }
         pageIndex = 0;
-        String uuid = request(pageIndex * pageCount, pageCount);
-        mPostTypes.put(uuid, POST_LOAD_MORE);
+        String uuid = request(pageIndex, pageCount);
+        mPostTypes.put(uuid, POST_REFRESH);
         pageIndex++;
-        mState = STATE_LOADING;
-        mFooterProvider.setFooterLoading();
+        mState = STATE_REFRESH;
     }
+
 
     protected void loadMore() {
         if (!loadMoreEnable) {
@@ -115,7 +115,7 @@ public abstract class RefreshRecyclerFragment<T, Event extends BaseEvent<List<T>
         if (mState == STATE_NO_MORE) {
             return;
         }
-        String uuid = request(pageIndex * pageCount, pageCount);
+        String uuid = request(pageIndex, pageCount);
         mPostTypes.put(uuid, POST_LOAD_MORE);
         pageIndex++;
         mState = STATE_LOADING;
@@ -230,11 +230,11 @@ public abstract class RefreshRecyclerFragment<T, Event extends BaseEvent<List<T>
      * 请求数据，并返回请求的 uuid
      * 例如：return mDiycode.getTopicsList(null, mNodeId, offset, limit);
      *
-     * @param offset 偏移量
-     * @param limit  请求数量
+     * @param pageIndex 页号
+     * @param pageCount  页量
      * @return uuid
      */
-    @NonNull protected abstract String request(int offset, int limit);
+    @NonNull protected abstract String request(int pageIndex, int pageCount);
 
     /**
      * 数据刷新成功的回调，由于不同页面可能要对数据进行处理，例如重新排序，清理掉一些无效数据等，所以由子类自己实现，
